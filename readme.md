@@ -3,7 +3,7 @@
 An Entity-Component System (ECS) is a software architecture used most commonly in game development. This library implements a simple ECS as a header-only library for use in your own projects.
 
 ## Getting Started
-To use the library, add `ecs.hpp` to your project and declare an instance of `ecs::ECS`. 
+To use the library, add `ecs.hpp` to your project and declare an instance of `ecs::ECS`.
 
 ``` c++
 #include "ecs.hpp"
@@ -51,17 +51,17 @@ int main() {
 }
 ```
 
-## What is an ECS? 
+## What is an ECS?
 
-An Entity-Component System is a software architecture which organizes objects into IDs (called **entities**) and their related data (called **components**). ECSs are used commonly in game developmen because they solve the following two problems present in Object-Oriented Programming (OOP). 
+An Entity-Component System is a software architecture which organizes objects into IDs (called **entities**) and their related data (called **components**). ECSs are used commonly in game developmen because they solve the following two problems present in Object-Oriented Programming (OOP).
 
 The first of these problems has to do with the **inflexibility of inheritance**. As an example, consider the scenario where you have two base classes, `NPC` and `Enemy`. During development, you realize that you need to create a special `Pirate` NPC that will behave like an `NPC` until he is angered, at which point he will attack the player and behave like an `Enemy`. This creates a situation where you would like `Pirate` extend from two different base classes, but there's no easy way to solve this without confusing the inheritence tree that all the objects in the game are relying on.
 
-An ECS solves this issue by using **composition**, rather than inheritence, to handle shared behavior between objects. When an entity is created in an ECS, it has no built-in properties or behavior like it would in OOP. Instead, data is added to the entity by attaching components (You create a `Pirate`, and then you give him a **position** component and a **velocity** component). Behavior is handled by way of **systems**, which are pieces of code that act on all entities which have certain components. 
+An ECS solves this issue by using **composition**, rather than inheritence, to handle shared behavior between objects. When an entity is created in an ECS, it has no built-in properties or behavior like it would in OOP. Instead, data is added to the entity by attaching components (You create a `Pirate`, and then you give him a **position** component and a **velocity** component). Behavior is handled by way of **systems**, which are pieces of code that act on all entities which have certain components.
 
-For example, suppose you have a physics system that updates the position of all entities based on their velocity. The physics system would run for all entities which have both a **position** and a **velocity**, and it would skip any entity which didn't have those components. This way you don't need to worry about inheritence, you just need to be sure that any entity which should use the physics code has both a **position** and **velocity** attached to it. 
+For example, suppose you have a physics system that updates the position of all entities based on their velocity. The physics system would run for all entities which have both a **position** and a **velocity**, and it would skip any entity which didn't have those components. This way you don't need to worry about inheritence, you just need to be sure that any entity which should use the physics code has both a **position** and **velocity** attached to it.
 
-The second concern with OOP has to do with **performance**. In game programming it is common to iterate over a list of objects and perform some code on each one. Such iteration pulls each object it iterates over entirely from memory, however most of the time the code only needs a select few fields from each object. For example, when handling the movement of all the `Enemy` objects, you only need the **position** and **velocity** variable attached to each `Enemy`, but to access those variables you need to pull the entire `Enemy` into memory. If the number of enemies is large enough and the `Enemy` has a large number of member variables, this can lead to performance issues where the required `Enemy` is not stored in the cache and must be retrieved from memory. 
+The second concern with OOP has to do with **performance**. In game programming it is common to iterate over a list of objects and perform some code on each one. Such iteration pulls each object it iterates over entirely from memory, however most of the time the code only needs a select few fields from each object. For example, when handling the movement of all the `Enemy` objects, you only need the **position** and **velocity** variable attached to each `Enemy`, but to access those variables you need to pull the entire `Enemy` into memory. If the number of enemies is large enough and the `Enemy` has a large number of member variables, this can lead to performance issues where the required `Enemy` is not stored in the cache and must be retrieved from memory.
 
 ECSs address this issue by storing components not as class member variables but instead in tightly-packed arrays by component type. The ECS keeps track of which components are assigned to which entities. So in our example about `Enemy` movement, the physics system would just need to loop through the **position** and **velocity** arrays without accessing the other components attached to each `Enemy`, which is much more efficient.
 
