@@ -27,6 +27,7 @@ namespace ecs {
     using Entity = std::uint32_t;
     using ComponentType = std::uint8_t;
     using Signature = std::bitset<MAX_COMPONENTS>;
+    using View = std::vector<ecs::Entity>;
 
     class IComponentArray {
         public:
@@ -167,7 +168,7 @@ namespace ecs {
             }
 
             template<typename ...rest>
-            std::vector<Entity> view() {
+            View view() {
                 Signature system_signature;
                 get_system_signature<rest...>(system_signature);
 
