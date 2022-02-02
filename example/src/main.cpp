@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "state.hpp"
+#include "breakout.hpp"
 
 // Game constants
 const char* GAME_TITLE = "ECS Demo";
@@ -45,7 +45,7 @@ void engine_set_resolution(int width, int height);
 void engine_toggle_fullscreen();
 void engine_clock_tick();
 
-State state;
+Breakout breakout;
 
 int main(int argc, char** argv) {
     if(!engine_init(argc, argv)) {
@@ -72,19 +72,19 @@ void input() {
         } else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F2) {
             engine_render_fps = !engine_render_fps;
         } else {
-            state.handle_input(e);
+            breakout.handle_input(e);
         }
     }
 }
 
 void update() {
-    state.update();
+    breakout.update();
 }
 
 void render() {
     render_clear();
 
-    state.render();
+    breakout.render();
 
     if(engine_render_fps) {
         render_text(("FPS: " + std::to_string(fps)).c_str(), FONT_HACK, COLOR_YELLOW, (vec2) { .x = 0, .y =  0});

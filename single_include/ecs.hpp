@@ -94,25 +94,31 @@ namespace ecs {
                 component_arrays_count = 0;
 
                 for(Entity i = 0; i < MAX_ENTITIES; i++) {
-                    entity_available_ids.push(i);
+                    entity_living[i] = false;
                 }
             }
 
             Entity create_entity() {
                 ecs_assert(entity_array_count < MAX_ENTITIES, "Entity array is full.");
 
-                Entity new_entity_id = entity_available_ids.front();
-                entity_available_ids.pop();
-                entity_array_count++;
+                for(Entity e = 0; e < MAX_ENTITIES; e++) {
+                    if(entity_living[e]) {
+                        continue;
+                    }
+                    entity_living[e] = true;
+                    entity_array_count++;
+                    return e;
+                }
 
-                return new_entity_id;
+                ecs_assert(false, "All entity living flags are true even though the entity array count isn't at max.");
+                return 0;
             }
 
             void remove_entity(Entity entity_to_remove) {
                 ecs_assert(entity_to_remove < MAX_ENTITIES, "Cannot remove entity. Entity out of range.");
 
+                entity_living[entity_to_remove] = false;
                 entity_signatures[entity_to_remove].reset();
-                entity_available_ids.push(entity_to_remove);
 
                 // Notify each component array that an entity has been destroyed
                 for(auto const& pair : component_arrays) {
@@ -173,16 +179,23 @@ namespace ecs {
                 get_system_signature<rest...>(system_signature);
 
                 std::vector<Entity> entity_list;
-                for(Entity i = 0; i < entity_array_count; i++) {
-                    if((entity_signatures[i] & system_signature) == system_signature) {
-                        entity_list.push_back(i);
+                int number_of_entities_checked = 0;
+                for(Entity i = 0; i < MAX_ENTITIES; i++) {
+                    if(entity_living[i]) {
+                        if((entity_signatures[i] & system_signature) == system_signature) {
+                            entity_list.push_back(i);
+                        }
+                        number_of_entities_checked++;
+                    }
+                    if(number_of_entities_checked >= entity_array_count) {
+                        break;
                     }
                 }
 
                 return entity_list;
             }
         private:
-            std::queue<Entity> entity_available_ids;
+            std::array<bool, MAX_ENTITIES> entity_living;
             std::array<Signature, MAX_ENTITIES> entity_signatures;
             Entity entity_array_count;
 
