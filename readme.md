@@ -51,6 +51,7 @@ int main() {
     }
 }
 ```
+See the `example` folder for an example of using the ECS in a full project. The example project uses SDL2 and requires SDL2 to compile and run.
 
 ## Why use an ECS?
 
