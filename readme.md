@@ -122,7 +122,7 @@ ECSs address this issue by storing components not as class member variables but 
 
 - **ecs::View view<T, ...typenames>()**
 
-    Returns an `ecs::View` containing all entities which have the components listed in template types list. `ecs::View` is an alias for `std::set<ecs::Entity>`.
+    Returns an `ecs::View` containing all entities which have the components listed in template types list. `ecs::View` is an alias for `std::vector<ecs::Entity>`.
     
     Views are how this ECS implementation handles systems. To create a system, just create a view and run your system's code over each of its members.
     ``` c++
